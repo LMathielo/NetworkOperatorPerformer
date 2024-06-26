@@ -9,7 +9,6 @@ import Foundation
 import Network
 
 final class NetworkMonitor {
-    private let monitor = NWPathMonitor()
     private var timeoutTime: TimeInterval = 0
 
     func setTimeout(with timeout: TimeInterval) {
@@ -17,7 +16,9 @@ final class NetworkMonitor {
     }
     
     var networkReachableStream: AsyncStream<Bool> {
-        AsyncStream { [monitor] continuation in
+        AsyncStream { continuation in
+            
+            let monitor = NWPathMonitor()
             monitor.start(queue: DispatchQueue(label: "NetworkMonitor"))
             
             monitor.pathUpdateHandler = { _ in

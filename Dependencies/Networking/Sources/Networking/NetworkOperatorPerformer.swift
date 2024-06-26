@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class NetworkOperationPerformer {
+public actor NetworkOperationPerformer {
     private let networkMonitor: NetworkMonitor
     
     public init () {
