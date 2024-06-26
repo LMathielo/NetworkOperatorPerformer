@@ -11,6 +11,7 @@
 		F992DBB02C2C9550004E2D52 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F992DBAF2C2C9550004E2D52 /* ContentView.swift */; };
 		F992DBB22C2C9552004E2D52 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F992DBB12C2C9552004E2D52 /* Assets.xcassets */; };
 		F992DBB52C2C9552004E2D52 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F992DBB42C2C9552004E2D52 /* Preview Assets.xcassets */; };
+		F992DBBC2C2C993E004E2D52 /* NetworkOperatorPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F992DBBB2C2C993E004E2D52 /* NetworkOperatorPerformer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +20,7 @@
 		F992DBAF2C2C9550004E2D52 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F992DBB12C2C9552004E2D52 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F992DBB42C2C9552004E2D52 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F992DBBB2C2C993E004E2D52 /* NetworkOperatorPerformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkOperatorPerformer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +55,7 @@
 			children = (
 				F992DBAD2C2C9550004E2D52 /* NetworkOperatorPerformerApp.swift */,
 				F992DBAF2C2C9550004E2D52 /* ContentView.swift */,
+				F992DBBD2C2C9948004E2D52 /* Network */,
 				F992DBB12C2C9552004E2D52 /* Assets.xcassets */,
 				F992DBB32C2C9552004E2D52 /* Preview Content */,
 			);
@@ -65,6 +68,14 @@
 				F992DBB42C2C9552004E2D52 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		F992DBBD2C2C9948004E2D52 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				F992DBBB2C2C993E004E2D52 /* NetworkOperatorPerformer.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -137,6 +148,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F992DBBC2C2C993E004E2D52 /* NetworkOperatorPerformer.swift in Sources */,
 				F992DBB02C2C9550004E2D52 /* ContentView.swift in Sources */,
 				F992DBAE2C2C9550004E2D52 /* NetworkOperatorPerformerApp.swift in Sources */,
 			);
