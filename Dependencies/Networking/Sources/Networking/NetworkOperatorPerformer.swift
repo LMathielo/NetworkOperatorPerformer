@@ -7,11 +7,22 @@
 
 import Foundation
 
-public actor NetworkOperationPerformer {
+public protocol NetworkOperationPerformer {
+    func performNetworkOperation(
+        using closure: @escaping () -> Void,
+        withinSeconds timeoutDuration: TimeInterval
+    ) async
+}
+
+public actor NetworkOperationPerformerImpl: NetworkOperationPerformer {
     private let networkMonitor: NetworkMonitor
     
     public init () {
-        self.networkMonitor = NetworkMonitor()
+        self.networkMonitor = NetworkMonitorImpl()
+    }
+    
+    init(networkMonitor: NetworkMonitor) {
+        self.networkMonitor = networkMonitor
     }
     
     /// Attempts to perform a network operation using the given `closure`, within the given `timeoutDuration`.

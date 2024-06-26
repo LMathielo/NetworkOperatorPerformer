@@ -8,7 +8,12 @@
 import Foundation
 import Network
 
-final class NetworkMonitor {
+protocol NetworkMonitor {
+    func setTimeout(with: TimeInterval)
+    var networkReachableStream: AsyncStream<Bool> { get }
+}
+
+final class NetworkMonitorImpl: NetworkMonitor {
     private var timeoutTime: TimeInterval = 0
 
     func setTimeout(with timeout: TimeInterval) {
