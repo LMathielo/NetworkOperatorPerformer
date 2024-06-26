@@ -11,7 +11,7 @@
 		F992DBB02C2C9550004E2D52 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F992DBAF2C2C9550004E2D52 /* ContentView.swift */; };
 		F992DBB22C2C9552004E2D52 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F992DBB12C2C9552004E2D52 /* Assets.xcassets */; };
 		F992DBB52C2C9552004E2D52 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F992DBB42C2C9552004E2D52 /* Preview Assets.xcassets */; };
-		F992DBBC2C2C993E004E2D52 /* NetworkOperatorPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F992DBBB2C2C993E004E2D52 /* NetworkOperatorPerformer.swift */; };
+		F992DBC52C2C9DA4004E2D52 /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = F992DBC42C2C9DA4004E2D52 /* Networking */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,7 +20,7 @@
 		F992DBAF2C2C9550004E2D52 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F992DBB12C2C9552004E2D52 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F992DBB42C2C9552004E2D52 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		F992DBBB2C2C993E004E2D52 /* NetworkOperatorPerformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkOperatorPerformer.swift; sourceTree = "<group>"; };
+		F992DBC22C2C9CD7004E2D52 /* Networking */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Networking; path = Dependencies/Networking; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -28,6 +28,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F992DBC52C2C9DA4004E2D52 /* Networking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -37,8 +38,10 @@
 		F992DBA12C2C9550004E2D52 = {
 			isa = PBXGroup;
 			children = (
+				F992DBC22C2C9CD7004E2D52 /* Networking */,
 				F992DBAC2C2C9550004E2D52 /* NetworkOperatorPerformer */,
 				F992DBAB2C2C9550004E2D52 /* Products */,
+				F992DBC32C2C9DA4004E2D52 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -55,7 +58,6 @@
 			children = (
 				F992DBAD2C2C9550004E2D52 /* NetworkOperatorPerformerApp.swift */,
 				F992DBAF2C2C9550004E2D52 /* ContentView.swift */,
-				F992DBBD2C2C9948004E2D52 /* Network */,
 				F992DBB12C2C9552004E2D52 /* Assets.xcassets */,
 				F992DBB32C2C9552004E2D52 /* Preview Content */,
 			);
@@ -70,12 +72,11 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		F992DBBD2C2C9948004E2D52 /* Network */ = {
+		F992DBC32C2C9DA4004E2D52 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F992DBBB2C2C993E004E2D52 /* NetworkOperatorPerformer.swift */,
 			);
-			path = Network;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -94,6 +95,9 @@
 			dependencies = (
 			);
 			name = NetworkOperatorPerformer;
+			packageProductDependencies = (
+				F992DBC42C2C9DA4004E2D52 /* Networking */,
+			);
 			productName = NetworkOperatorPerformer;
 			productReference = F992DBAA2C2C9550004E2D52 /* NetworkOperatorPerformer.app */;
 			productType = "com.apple.product-type.application";
@@ -148,7 +152,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F992DBBC2C2C993E004E2D52 /* NetworkOperatorPerformer.swift in Sources */,
 				F992DBB02C2C9550004E2D52 /* ContentView.swift in Sources */,
 				F992DBAE2C2C9550004E2D52 /* NetworkOperatorPerformerApp.swift in Sources */,
 			);
@@ -354,6 +357,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F992DBC42C2C9DA4004E2D52 /* Networking */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Networking;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F992DBA22C2C9550004E2D52 /* Project object */;
 }
