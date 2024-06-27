@@ -11,6 +11,7 @@ public enum NetworkError: Error {
     case invalidUrl
     case downloadFailed
     case timeout
+    case unknown
     
     public var description: String {
         "The network could not be fetched. Reason: \(self)"
