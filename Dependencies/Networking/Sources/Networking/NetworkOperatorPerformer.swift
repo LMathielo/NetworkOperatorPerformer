@@ -7,17 +7,17 @@
 
 import Foundation
 
-public protocol NetworkOperationPerformer {
+protocol NetworkOperationPerformer {
     func performNetworkOperation(
-        using closure: @escaping () -> Void,
+        using closure: @escaping () async throws -> Void,
         withinSeconds timeoutDuration: TimeInterval
-    ) async
+    ) async throws
 }
 
-public actor NetworkOperationPerformerImpl: NetworkOperationPerformer {
+final actor NetworkOperationPerformerImpl: NetworkOperationPerformer {
     private let networkMonitor: NetworkMonitor
     
-    public init () {
+    init () {
         self.networkMonitor = NetworkMonitorImpl()
     }
     
@@ -27,15 +27,15 @@ public actor NetworkOperationPerformerImpl: NetworkOperationPerformer {
     
     /// Attempts to perform a network operation using the given `closure`, within the given `timeoutDuration`.
     /// If the network is not accessible within the given `timeoutDuration`, the operation is not performed.
-    public func performNetworkOperation(
-        using closure: @escaping () -> Void,
+    func performNetworkOperation(
+        using closure: @escaping () async throws -> Void,
         withinSeconds timeoutDuration: TimeInterval
-    ) async {
+    ) async throws {
         networkMonitor.setTimeout(with: timeoutDuration)
-        
-        for await networkAvailable in networkMonitor.networkReachableStream {
+                
+        for try await networkAvailable in networkMonitor.networkReachableStream {
             if networkAvailable {
-                closure()
+                try await closure()
             }
         }
         

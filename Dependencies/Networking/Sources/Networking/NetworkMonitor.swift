@@ -10,7 +10,7 @@ import Network
 
 protocol NetworkMonitor {
     func setTimeout(with: TimeInterval)
-    var networkReachableStream: AsyncStream<Bool> { get }
+    var networkReachableStream: AsyncThrowingStream<Bool, Error> { get }
 }
 
 final class NetworkMonitorImpl: NetworkMonitor {
@@ -20,26 +20,25 @@ final class NetworkMonitorImpl: NetworkMonitor {
         timeoutTime = timeout
     }
     
-    var networkReachableStream: AsyncStream<Bool> {
-        AsyncStream { continuation in
+    var networkReachableStream: AsyncThrowingStream<Bool, Error> {
+        AsyncThrowingStream { continuation in
             
             let monitor = NWPathMonitor()
             monitor.start(queue: DispatchQueue(label: "NetworkMonitor"))
             
-            monitor.pathUpdateHandler = { _ in
-                if monitor.currentPath.status == .satisfied {
+            monitor.pathUpdateHandler = { @Sendable path in
+                if path.status == .satisfied {
                     print("SendingStream -> Network reachable: true")
                     continuation.yield(true)
                     continuation.finish()
                 }
             }
             
-            let workItem = DispatchWorkItem { continuation.finish() }
+            let workItem = DispatchWorkItem { continuation.finish(throwing: NetworkError.timeout) }
             DispatchQueue.global().asyncAfter(deadline: .now() + timeoutTime, execute: workItem)
             
             continuation.onTermination = { @Sendable _ in
                 print("termination CALLED!")
-                continuation.yield(false)
                 monitor.cancel()
             }
         }
