@@ -8,12 +8,12 @@
 import SwiftUI
 
 extension Component {
-    struct Button: View {
-        let icon: String?
-        let label: String
-        let action: () -> Void
+    public struct Button: View {
+        private let icon: String?
+        private let label: String
+        private let action: () -> Void
         
-        init(
+        public init(
             _ label: String,
             _ icon: String? = nil,
             action: @escaping () -> Void
@@ -23,7 +23,7 @@ extension Component {
             self.action = action
         }
         
-        var body: some View {
+        public var body: some View {
             SwiftUI.Button {
                 action()
             } label: {

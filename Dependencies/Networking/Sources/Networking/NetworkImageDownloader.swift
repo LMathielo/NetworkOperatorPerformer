@@ -1,6 +1,6 @@
 //
-//  ImageDownloader.swift
-//  ImageDownloader
+//  NetworkImageDownloader.swift
+//  NetworkOperatorPerformer
 //
 //  Created by Lucas Mathielo on 27/06/24.
 //
@@ -8,11 +8,11 @@
 import Foundation
 import UIKit
 
-public protocol ImageDownloader {
+public protocol NetworkImageDownloader {
     func image(for urlString: String) async -> Result<UIImage, NetworkError>
 }
 
-public actor ImageDownloaderImpl: ImageDownloader {
+public actor NetworkImageDownloaderImpl: NetworkImageDownloader {
     private let networkOperationPerformer: NetworkOperationPerformer
     private let timeoutTime: TimeInterval
     private var image: UIImage?
@@ -36,21 +36,22 @@ public actor ImageDownloaderImpl: ImageDownloader {
             try await networkOperationPerformer
                 .performNetworkOperation(
                     using: { [weak self] in
-                        try await self?.downloadImage(with: "")
+                        print("closure started!")
+                        try await self?.downloadImage(with: urlString)
+                        print("closure finished!")
                     },
                     withinSeconds: timeoutTime
                 )
             
-            
             guard let image else {
                 assertionFailure("Upon sucessful download, image can't be nil!")
-                throw NetworkError.unknown
+                throw NetworkError.parsingFailure
             }
             
             return .success(image)
         }
         catch {
-            return .failure(error as? NetworkError ?? NetworkError.unknown)
+            return .failure(error as? NetworkError ?? NetworkError.unknown(error.localizedDescription))
         }
     }
     

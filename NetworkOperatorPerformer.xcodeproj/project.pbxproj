@@ -8,27 +8,23 @@
 
 /* Begin PBXBuildFile section */
 		F96E86622C2DDD0A0029AA15 /* CommonUI in Frameworks */ = {isa = PBXBuildFile; productRef = F96E86612C2DDD0A0029AA15 /* CommonUI */; };
-		F973AA222C2D6A700045E5B4 /* ImageDownloadViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F973AA212C2D6A700045E5B4 /* ImageDownloadViewModel.swift */; };
-		F973AA242C2D6A7B0045E5B4 /* ImageDownloadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F973AA232C2D6A7B0045E5B4 /* ImageDownloadView.swift */; };
-		F973AA262C2D86990045E5B4 /* ImageDownloadedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F973AA252C2D86980045E5B4 /* ImageDownloadedView.swift */; };
 		F992DBAE2C2C9550004E2D52 /* NetworkOperatorPerformerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F992DBAD2C2C9550004E2D52 /* NetworkOperatorPerformerApp.swift */; };
 		F992DBB02C2C9550004E2D52 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F992DBAF2C2C9550004E2D52 /* ContentView.swift */; };
 		F992DBB22C2C9552004E2D52 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F992DBB12C2C9552004E2D52 /* Assets.xcassets */; };
 		F992DBB52C2C9552004E2D52 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F992DBB42C2C9552004E2D52 /* Preview Assets.xcassets */; };
 		F992DBC52C2C9DA4004E2D52 /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = F992DBC42C2C9DA4004E2D52 /* Networking */; };
+		F9E7198E2C2F28D600C52024 /* ImageDownloader in Frameworks */ = {isa = PBXBuildFile; productRef = F9E7198D2C2F28D600C52024 /* ImageDownloader */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		F96E86602C2DD9280029AA15 /* CommonUI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = CommonUI; path = Dependencies/CommonUI; sourceTree = "<group>"; };
-		F973AA212C2D6A700045E5B4 /* ImageDownloadViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloadViewModel.swift; sourceTree = "<group>"; };
-		F973AA232C2D6A7B0045E5B4 /* ImageDownloadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloadView.swift; sourceTree = "<group>"; };
-		F973AA252C2D86980045E5B4 /* ImageDownloadedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloadedView.swift; sourceTree = "<group>"; };
 		F992DBAA2C2C9550004E2D52 /* NetworkOperatorPerformer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetworkOperatorPerformer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F992DBAD2C2C9550004E2D52 /* NetworkOperatorPerformerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkOperatorPerformerApp.swift; sourceTree = "<group>"; };
 		F992DBAF2C2C9550004E2D52 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F992DBB12C2C9552004E2D52 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F992DBB42C2C9552004E2D52 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F992DBC22C2C9CD7004E2D52 /* Networking */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Networking; path = Dependencies/Networking; sourceTree = "<group>"; };
+		F9E7198C2C2F267500C52024 /* ImageDownloader */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ImageDownloader; path = Dependencies/ImageDownloader; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,6 +33,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F992DBC52C2C9DA4004E2D52 /* Networking in Frameworks */,
+				F9E7198E2C2F28D600C52024 /* ImageDownloader in Frameworks */,
 				F96E86622C2DDD0A0029AA15 /* CommonUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -44,19 +41,10 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		F973AA202C2D69370045E5B4 /* ImageDownloadView */ = {
-			isa = PBXGroup;
-			children = (
-				F973AA212C2D6A700045E5B4 /* ImageDownloadViewModel.swift */,
-				F973AA232C2D6A7B0045E5B4 /* ImageDownloadView.swift */,
-				F973AA252C2D86980045E5B4 /* ImageDownloadedView.swift */,
-			);
-			path = ImageDownloadView;
-			sourceTree = "<group>";
-		};
 		F992DBA12C2C9550004E2D52 = {
 			isa = PBXGroup;
 			children = (
+				F9E7198C2C2F267500C52024 /* ImageDownloader */,
 				F96E86602C2DD9280029AA15 /* CommonUI */,
 				F992DBC22C2C9CD7004E2D52 /* Networking */,
 				F992DBAC2C2C9550004E2D52 /* NetworkOperatorPerformer */,
@@ -76,7 +64,6 @@
 		F992DBAC2C2C9550004E2D52 /* NetworkOperatorPerformer */ = {
 			isa = PBXGroup;
 			children = (
-				F973AA202C2D69370045E5B4 /* ImageDownloadView */,
 				F992DBAD2C2C9550004E2D52 /* NetworkOperatorPerformerApp.swift */,
 				F992DBAF2C2C9550004E2D52 /* ContentView.swift */,
 				F992DBB12C2C9552004E2D52 /* Assets.xcassets */,
@@ -119,6 +106,7 @@
 			packageProductDependencies = (
 				F992DBC42C2C9DA4004E2D52 /* Networking */,
 				F96E86612C2DDD0A0029AA15 /* CommonUI */,
+				F9E7198D2C2F28D600C52024 /* ImageDownloader */,
 			);
 			productName = NetworkOperatorPerformer;
 			productReference = F992DBAA2C2C9550004E2D52 /* NetworkOperatorPerformer.app */;
@@ -174,11 +162,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F973AA242C2D6A7B0045E5B4 /* ImageDownloadView.swift in Sources */,
 				F992DBB02C2C9550004E2D52 /* ContentView.swift in Sources */,
 				F992DBAE2C2C9550004E2D52 /* NetworkOperatorPerformerApp.swift in Sources */,
-				F973AA222C2D6A700045E5B4 /* ImageDownloadViewModel.swift in Sources */,
-				F973AA262C2D86990045E5B4 /* ImageDownloadedView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -391,6 +376,10 @@
 		F992DBC42C2C9DA4004E2D52 /* Networking */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Networking;
+		};
+		F9E7198D2C2F28D600C52024 /* ImageDownloader */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ImageDownloader;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
