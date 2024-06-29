@@ -19,9 +19,15 @@ extension ImageDownloader {
             VStack{
                 switch viewModel.downloadStatus {
                 case .initial:
-                    Component.Button("Start Download") {
-                        viewModel.startDownloadingImage()
+                    VStack {
+                        Component.Text.Large("Image Downloader!")
+                        Component.Text.Small("Try your luck!")
+                        Component.Button.Primary("Start") {
+                            viewModel.startDownloadingImage()
+                        }
                     }
+                    .padding()
+                    
                 case .loading, .delayed:
                     Component.LoadingView(delayed: viewModel.downloadStatus == .delayed) {
                         viewModel.cancelDownloadTask()

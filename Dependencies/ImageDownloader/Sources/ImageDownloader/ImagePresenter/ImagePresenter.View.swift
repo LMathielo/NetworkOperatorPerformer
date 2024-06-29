@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CommonUI
 
 enum ImagePresenter { }
 
@@ -17,18 +18,24 @@ extension ImagePresenter {
 
         var body: some SwiftUI.View {
             
-            if let image {
-                Image(uiImage: image).padding()
+            VStack {
+                if let image {
+                    Image(uiImage: image).padding()
+                }
+                
+                if let error {
+                    Component.Text.Large("=(")
+                        .padding()
+                    Component.Text.Small(error)
+                }
             }
-            
-            if let error {
-                Text(error)
-            }
+            .padding()
+            .multilineTextAlignment(.center)
         }
     }
     
 }
 
 #Preview {
-    ImagePresenter.View(image: nil, error: nil)
+    ImagePresenter.View(image: nil, error: "Network Error")
 }

@@ -20,7 +20,7 @@ extension ImageDownloader.View.ViewModel {
 }
 
 extension ImageDownloader.View {
-    
+//    @MainActor
     @Observable class ViewModel {
         private let networkService: ImageDownloader.Service
         
@@ -42,7 +42,7 @@ extension ImageDownloader.View {
             self.downloadStatus = .initial
         }
         
-        func setInitialState() {
+        nonisolated func setInitialState() {
             downloadStatus = .initial
         }
         
@@ -51,8 +51,10 @@ extension ImageDownloader.View {
                 downloadStatus = .loading
                 defineDelayedLoading()
                 
-                guard let result = await networkService.downloadImage(with: "https://picsum.photos/200/300") else { return }
+//            https://hws.dev/paul.jpg
                 
+                guard let result = await networkService.downloadImage(with: "https://picsum.photos/200/300") else { return }
+            
                 switch result {
                 case .success(let image):
                     downloadStatus = .completed(image)
@@ -72,11 +74,14 @@ extension ImageDownloader.View {
         }
         
         private func defineDelayedLoading() {
-            Task { [weak self] in
+            Task {
                 try await Task.sleep(for: .seconds(2))
-                if self?.downloadStatus == .loading {
-                    self?.downloadStatus = .delayed
-                }
+                
+//                await MainActor.run { [weak self] in
+                    if self.downloadStatus == .loading {
+                        self.downloadStatus = .delayed
+                    }
+//                }
             }
         }
     }
