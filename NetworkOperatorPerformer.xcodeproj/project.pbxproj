@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		F96E86622C2DDD0A0029AA15 /* CommonUI in Frameworks */ = {isa = PBXBuildFile; productRef = F96E86612C2DDD0A0029AA15 /* CommonUI */; };
 		F992DBAE2C2C9550004E2D52 /* NetworkOperatorPerformerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F992DBAD2C2C9550004E2D52 /* NetworkOperatorPerformerApp.swift */; };
-		F992DBB02C2C9550004E2D52 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F992DBAF2C2C9550004E2D52 /* ContentView.swift */; };
 		F992DBB22C2C9552004E2D52 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F992DBB12C2C9552004E2D52 /* Assets.xcassets */; };
 		F992DBB52C2C9552004E2D52 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F992DBB42C2C9552004E2D52 /* Preview Assets.xcassets */; };
 		F992DBC52C2C9DA4004E2D52 /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = F992DBC42C2C9DA4004E2D52 /* Networking */; };
@@ -20,7 +19,6 @@
 		F96E86602C2DD9280029AA15 /* CommonUI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = CommonUI; path = Dependencies/CommonUI; sourceTree = "<group>"; };
 		F992DBAA2C2C9550004E2D52 /* NetworkOperatorPerformer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetworkOperatorPerformer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F992DBAD2C2C9550004E2D52 /* NetworkOperatorPerformerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkOperatorPerformerApp.swift; sourceTree = "<group>"; };
-		F992DBAF2C2C9550004E2D52 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F992DBB12C2C9552004E2D52 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F992DBB42C2C9552004E2D52 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F992DBC22C2C9CD7004E2D52 /* Networking */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Networking; path = Dependencies/Networking; sourceTree = "<group>"; };
@@ -65,7 +63,6 @@
 			isa = PBXGroup;
 			children = (
 				F992DBAD2C2C9550004E2D52 /* NetworkOperatorPerformerApp.swift */,
-				F992DBAF2C2C9550004E2D52 /* ContentView.swift */,
 				F992DBB12C2C9552004E2D52 /* Assets.xcassets */,
 				F992DBB32C2C9552004E2D52 /* Preview Content */,
 			);
@@ -162,7 +159,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F992DBB02C2C9550004E2D52 /* ContentView.swift in Sources */,
 				F992DBAE2C2C9550004E2D52 /* NetworkOperatorPerformerApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
