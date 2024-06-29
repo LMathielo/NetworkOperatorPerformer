@@ -11,7 +11,7 @@ import CommonUI
 extension ImageDownloader {
     
     public struct View: SwiftUI.View {
-        @State var viewModel = ViewModel()
+        @State private var viewModel = ViewModel()
         
         public init() { }
         
