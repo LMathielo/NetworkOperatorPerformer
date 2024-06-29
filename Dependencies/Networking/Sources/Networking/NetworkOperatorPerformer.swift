@@ -7,18 +7,24 @@
 
 import Foundation
 
-protocol NetworkOperationPerformer {
-    func performNetworkOperation<T>(
-        within timeoutDuration: TimeInterval,
-        using closure: @escaping () async throws -> T
-    ) async throws -> T?
+public protocol DownloadableContent {
+    init?(data: Data)
 }
 
-final actor NetworkOperationPerformerImpl: NetworkOperationPerformer {
+public protocol NetworkOperationPerformer {
+    // Ideally, this should be a generic <T: Decodable> to handle proper API responses.
+    // Using `DownloadableContent` in this case as we want to abstract the usage of NetworkOperation to any Object that can be initialised with Data. E.g: UIImages :)
+    func performNetworkOperation<T: DownloadableContent>(
+        for urlString: String,
+        within timeoutDuration: TimeInterval
+    ) async throws -> Result<T, NetworkError>
+}
+
+public final class NetworkOperationPerformerImpl: NetworkOperationPerformer {
     private let networkMonitor: NetworkMonitor
     
-    init () {
-        self.networkMonitor = NetworkMonitorImpl()
+    public convenience init () {
+        self.init(networkMonitor: NetworkMonitorImpl())
     }
     
     init(networkMonitor: NetworkMonitor) {
@@ -27,19 +33,52 @@ final actor NetworkOperationPerformerImpl: NetworkOperationPerformer {
     
     /// Attempts to perform a network operation using the given `closure`, within the given `timeoutDuration`.
     /// If the network is not accessible within the given `timeoutDuration`, the operation is not performed.
-    func performNetworkOperation<T>(
-        within timeoutDuration: TimeInterval,
-        using closure: @escaping () async throws -> T
-    ) async throws -> T? {
-        networkMonitor.setTimeout(with: timeoutDuration)
-                
-        for try await networkAvailable in networkMonitor.networkReachableStream {
-            if networkAvailable, !Task.isCancelled {
-                return try await closure()
+    /// 
+    public func performNetworkOperation<T: DownloadableContent>(for urlString: String, within timeoutDuration: TimeInterval) async throws -> Result<T, NetworkError> {
+        
+        return try await withThrowingTaskGroup(of: Result<T, NetworkError>.self) { group in
+            group.addTask {
+                return try await self.performRequestIfNetworkReachable(for: urlString)
             }
+            
+            group.addTask {
+                try await Task.sleep(for: .seconds(timeoutDuration))
+                return .failure(NetworkError.timeout)
+            }
+            
+            guard let result = try await group.next() else {
+                return .failure(NetworkError.unknown("not possible"))
+            }
+            
+            group.cancelAll()
+            
+            return result
+        }
+    }
+}
+
+private extension NetworkOperationPerformerImpl {
+    func performRequestIfNetworkReachable<T: DownloadableContent>(for urlString: String) async throws -> Result<T, NetworkError> {
+        
+        await self.networkMonitor.signalNetworkReachable()
+        
+        // explicitly throws the task, if its on a cancelled state to avoid unecessary API calls
+        try Task.checkCancellation()
+        
+        guard let url = URL(string: urlString) else {
+            return .failure(NetworkError.invalidUrl)
         }
         
-        print("Stream finished.")
-        return nil
+        print("its download time!")
+        
+        guard let (data, _) = try? await URLSession.shared.data(from: url) else {
+            return .failure(NetworkError.downloadFailed)
+        }
+        
+        guard let content = T(data: data) else {
+            return .failure(.parsingFailure)
+        }
+        
+        return .success(content)
     }
 }

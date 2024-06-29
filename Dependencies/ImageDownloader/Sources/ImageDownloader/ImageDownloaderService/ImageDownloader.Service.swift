@@ -12,14 +12,25 @@ protocol ImageDownloaderService {
     func downloadImage(with url: String) async -> Result<UIImage, NetworkError>?
 }
 
+// Abstracting .init for UIImage as we dont want to expose what's being downloaded for NetworkLayer
+extension UIImage: DownloadableContent { }
+
 extension ImageDownloader {
     typealias Service = ImageDownloaderService
     
     class ServiceImpl: Service {
-        private let networkPerformer = NetworkImageDownloaderImpl(timeoutTime: 10)
+        private let networkPerformer: NetworkOperationPerformer
+        
+        convenience init() {
+            self.init(networkPerformer: NetworkOperationPerformerImpl())
+        }
+        
+        init(networkPerformer: NetworkOperationPerformer) {
+            self.networkPerformer = networkPerformer
+        }
         
         func downloadImage(with url: String) async -> Result<UIImage, NetworkError>? {
-            await networkPerformer.image(for: url)
+            return try? await networkPerformer.performNetworkOperation(for: url, within: 10)
         }
     }
 }
