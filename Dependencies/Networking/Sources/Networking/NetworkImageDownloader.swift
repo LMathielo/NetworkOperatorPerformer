@@ -9,13 +9,12 @@ import Foundation
 import UIKit
 
 public protocol NetworkImageDownloader {
-    func image(for urlString: String) async -> Result<UIImage, NetworkError>
+    func image(for urlString: String) async -> Result<UIImage, NetworkError>?
 }
 
 public actor NetworkImageDownloaderImpl: NetworkImageDownloader {
     private let networkOperationPerformer: NetworkOperationPerformer
     private let timeoutTime: TimeInterval
-    private var image: UIImage?
     
     public init (timeoutTime: TimeInterval) {
         self.timeoutTime = timeoutTime
@@ -30,32 +29,21 @@ public actor NetworkImageDownloaderImpl: NetworkImageDownloader {
         self.networkOperationPerformer = networkOperationPerformer
     }
     
-    
-    public func image(for urlString: String) async -> Result<UIImage, NetworkError> {
+    public func image(for urlString: String) async -> Result<UIImage, NetworkError>? {
         do {
-            try await networkOperationPerformer
-                .performNetworkOperation(
-                    using: { [weak self] in
-                        print("closure started!")
-                        try await self?.downloadImage(with: urlString)
-                        print("closure finished!")
-                    },
-                    withinSeconds: timeoutTime
-                )
-            
-            guard let image else {
-                assertionFailure("Upon sucessful download, image can't be nil!")
-                throw NetworkError.parsingFailure
+            let image = try await networkOperationPerformer.performNetworkOperation(within: timeoutTime) {
+                return try await self.downloadImage(with: urlString)
             }
+            guard let image else { return nil }
             
             return .success(image)
-        }
-        catch {
+            
+        } catch {
             return .failure(error as? NetworkError ?? NetworkError.unknown(error.localizedDescription))
         }
     }
     
-    private func downloadImage(with urlString: String) async throws {
+    private func downloadImage(with urlString: String) async throws -> UIImage {
         guard let url = URL(string: urlString) else {
             throw NetworkError.invalidUrl
         }
@@ -65,6 +53,6 @@ public actor NetworkImageDownloaderImpl: NetworkImageDownloader {
             throw NetworkError.downloadFailed
         }
         
-        self.image = image
+        return image
     }
 }

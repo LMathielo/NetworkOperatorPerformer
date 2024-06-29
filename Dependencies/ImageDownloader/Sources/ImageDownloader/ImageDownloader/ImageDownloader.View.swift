@@ -20,13 +20,11 @@ extension ImageDownloader {
                 switch viewModel.downloadStatus {
                 case .initial:
                     Component.Button("Start Download") {
-                        Task {
-                            await viewModel.startDownloadingImage()
-                        }
+                        viewModel.startDownloadingImage()
                     }
                 case .loading, .delayed:
                     Component.LoadingView(delayed: viewModel.downloadStatus == .delayed) {
-                        print("cancel task!")
+                        viewModel.cancelDownloadTask()
                     }
                 case .completed, .error:
                     EmptyView()

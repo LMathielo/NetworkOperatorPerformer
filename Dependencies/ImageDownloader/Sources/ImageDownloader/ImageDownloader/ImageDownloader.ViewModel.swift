@@ -22,21 +22,23 @@ extension ImageDownloader.View.ViewModel {
 extension ImageDownloader.View {
     
     @Observable class ViewModel {
-        private let imageDownloader: NetworkImageDownloader
+        private let networkService: ImageDownloader.Service
+        
         private(set) var downloadStatus: DownloadStatus
+        private var downloadTask: Task<(), Never>?
         
         var shouldPresentSheet: Bool = false
         
         convenience init() {
             self.init(
-                imageDownloader: NetworkImageDownloaderImpl(timeoutTime: 999)
+                networkService: ImageDownloader.ServiceImpl()
             )
         }
         
         init(
-            imageDownloader: NetworkImageDownloader
+            networkService: ImageDownloader.Service
         ) {
-            self.imageDownloader = imageDownloader
+            self.networkService = networkService
             self.downloadStatus = .initial
         }
         
@@ -44,30 +46,38 @@ extension ImageDownloader.View {
             downloadStatus = .initial
         }
         
-        func startDownloadingImage() async {
-            downloadStatus = .loading
-            
-            //enhance this!
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { [weak self] in
+        func startDownloadingImage() {
+            downloadTask = Task {
+                downloadStatus = .loading
+                defineDelayedLoading()
+                
+                guard let result = await networkService.downloadImage(with: "https://picsum.photos/200/300") else { return }
+                
+                switch result {
+                case .success(let image):
+                    downloadStatus = .completed(image)
+                    
+                case .failure(let error):
+                    downloadStatus = .error(error.description)
+                }
+                
+                shouldPresentSheet = true
+            }
+        }
+        
+        func cancelDownloadTask() {
+            downloadTask?.cancel()
+            downloadTask = nil
+            downloadStatus = .initial
+        }
+        
+        private func defineDelayedLoading() {
+            Task { [weak self] in
+                try await Task.sleep(for: .seconds(2))
                 if self?.downloadStatus == .loading {
                     self?.downloadStatus = .delayed
                 }
-            })
-            
-            // Create a service layer!! to help mocking network for tests + running isolated module
-            let result = await imageDownloader.image(for: "https://picsum.photos/200/300")
-            // let result = await imageDownloader.image(for: "https://hws.dev/paul.jpg")
-            
-            
-            switch result {
-            case .success(let image):
-                downloadStatus = .completed(image)
-                
-            case .failure(let error):
-                downloadStatus = .error(error.description)
             }
-            
-            shouldPresentSheet = true
         }
     }
     
