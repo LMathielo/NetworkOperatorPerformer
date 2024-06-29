@@ -7,8 +7,11 @@
 
 import SwiftUI
 
-extension Component {
-    public struct Button: View {
+extension Component.Button {
+    
+    public struct Primary: View {
+        @Environment(\.colorScheme) private var colorScheme
+        
         private let icon: String?
         private let label: String
         private let action: () -> Void
@@ -34,26 +37,25 @@ extension Component {
                             .scaledToFit()
                             .frame(width: 28, height: 28)
                     }
-                    Component.Text(label)
+                    Component.Text.Small(label)
                 }
             }
             .buttonStyle(.borderedProminent)
-            .tint(.blue)
+            .tint(colorScheme == .light ? .blue : .white)
             .font(.title)
             .padding()
-            .foregroundStyle(.white)
+            .foregroundStyle(colorScheme == .light ? .white : .black)
         }
     }
+    
 }
 
-
-
 #Preview {
-    Component.Button("Cancel") { }
+    Component.Button.Primary("Cancel") { }
         .preferredColorScheme(.light)
 }
 
 #Preview {
-    Component.Button("Cancel") { }
+    Component.Button.Primary("Cancel") { }
         .preferredColorScheme(.dark)
 }

@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-public extension Component {
-    struct Text: View {
+public extension Component.Text {
+    struct Small: View {
         private let title: String
         
         public init(_ title: String) {
@@ -22,9 +22,9 @@ public extension Component {
 }
 
 #Preview {
-    Component.Text("Big Text!").preferredColorScheme(.light)
+    Component.Text.Small("Small Text!").preferredColorScheme(.light)
 }
 
 #Preview {
-    Component.Text("Big Text!").preferredColorScheme(.dark)
+    Component.Text.Small("Small Text!").preferredColorScheme(.dark)
 }
