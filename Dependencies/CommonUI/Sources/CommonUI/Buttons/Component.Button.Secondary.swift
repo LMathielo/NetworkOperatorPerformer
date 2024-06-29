@@ -49,7 +49,6 @@ extension Component.Button {
                 Component.Text.Small(label)
             }
             .font(.title)
-            .padding()
             .foregroundStyle(style.color(for: colorScheme))
         }
     }

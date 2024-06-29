@@ -20,11 +20,14 @@ extension Component {
         public var body: some View {
             VStack {
                 ProgressView {
-                    if delayed {
-                        Component.Text.Small("This is taking longer than expected...")
-                    }
                 }
                 .controlSize(.extraLarge)
+                .padding()
+                
+                if delayed {
+                    Component.Text.Small("This is taking longer than expected...")
+                        .padding(.bottom, 2)
+                }
                 
                 if delayed, let cancelAction {
                     Component.Button.Secondary("Cancel", style: .cancel) {
