@@ -81,11 +81,9 @@ private extension ImageDownloader.View.ViewModel {
         switch result {
         case .success(let image):
             self.downloadStatus = .completed(image)
-            print("self?.downloadStatus = .completed(image)")
             
         case .failure(let error):
             self.downloadStatus = .error(error.description)
-            print("self?.downloadStatus = .error(error.description)")
         }
         
         self.shouldPresentSheet = true

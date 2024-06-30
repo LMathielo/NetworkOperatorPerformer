@@ -77,7 +77,6 @@ private extension NetworkOperationPerformerImpl {
             return .failure(NetworkError.invalidUrl)
         }
         
-        print("its download time!")
         guard let (data, _) = try? await session.fetchData(from: url) else {
             return .failure(NetworkError.downloadFailed)
         }

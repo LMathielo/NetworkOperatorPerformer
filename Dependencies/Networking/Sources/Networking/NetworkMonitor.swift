@@ -25,12 +25,10 @@ final class NetworkMonitorImpl: NetworkMonitor {
             monitor.start(queue: DispatchQueue(label: "NetworkMonitor"))
             
             monitor.pathUpdateHandler = { @Sendable path in
-                    print("SendingStream -> Network reachable: \(path.status)")
                     continuation.yield(path.status)
             }
             
             continuation.onTermination = { @Sendable _ in
-                print("termination CALLED!")
                 monitor.cancel()
             }
         }
