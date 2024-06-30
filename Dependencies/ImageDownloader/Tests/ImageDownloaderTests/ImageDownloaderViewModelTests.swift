@@ -30,6 +30,9 @@ final class ImageDownloaderTests: XCTestCase {
         status = await sut.downloadStatus
         XCTAssertTrue(taskManagerMock.startCalled)
         XCTAssertEqual(status, .loading)
+        
+        let shouldPresentSheet = await sut.shouldPresentSheet
+        XCTAssertFalse(shouldPresentSheet)
     }
     
     func test_startDownloadingImage_getsDelayedState() async throws {
@@ -46,6 +49,9 @@ final class ImageDownloaderTests: XCTestCase {
         status = await sut.downloadStatus
         XCTAssertTrue(taskManagerMock.startCalled)
         XCTAssert(status == .delayed)
+        
+        let shouldPresentSheet = await sut.shouldPresentSheet
+        XCTAssertFalse(shouldPresentSheet)
     }
     
     func test_startDownloadingImage_getsSuccessWithImage() async throws {
@@ -66,6 +72,9 @@ final class ImageDownloaderTests: XCTestCase {
         
         XCTAssertTrue(taskManagerMock.startCalled)
         XCTAssert(image == mockImage)
+        
+        let shouldPresentSheet = await sut.shouldPresentSheet
+        XCTAssertTrue(shouldPresentSheet)
     }
     
     func test_startDownloadingImage_getsFailureNetworkError() async throws {
@@ -83,6 +92,9 @@ final class ImageDownloaderTests: XCTestCase {
         
         XCTAssertTrue(taskManagerMock.startCalled)
         XCTAssert(error == "The network could not be fetched. Reason: timeout")
+        
+        let shouldPresentSheet = await sut.shouldPresentSheet
+        XCTAssertTrue(shouldPresentSheet)
     }
     
     func test_setInitialState_setsInitialState() async throws {
@@ -97,6 +109,9 @@ final class ImageDownloaderTests: XCTestCase {
         // Then
         status = await sut.downloadStatus
         XCTAssert(status == .initial)
+        
+        let shouldPresentSheet = await sut.shouldPresentSheet
+        XCTAssertFalse(shouldPresentSheet)
     }
     
     
@@ -112,6 +127,9 @@ final class ImageDownloaderTests: XCTestCase {
         XCTAssert(status == .initial)
         XCTAssertTrue(taskManagerMock.startCalled)
         XCTAssertTrue(taskManagerMock.cancelCalled)
+        
+        let shouldPresentSheet = await sut.shouldPresentSheet
+        XCTAssertFalse(shouldPresentSheet)
     }
     
 }
