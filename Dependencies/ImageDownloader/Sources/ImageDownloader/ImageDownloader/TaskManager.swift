@@ -17,7 +17,7 @@ protocol TaskManager {
 }
 
 enum TaskManagerError: Error {
-    case alreadyRunningTask
+    case alreadyRunning
 }
 
 class TaskManagerImpl: TaskManager {
@@ -25,7 +25,7 @@ class TaskManagerImpl: TaskManager {
     
     func start(_ task: @escaping () async -> Void) throws {
         if let _ = self.runningTask {
-            throw TaskManagerError.alreadyRunningTask
+            throw TaskManagerError.alreadyRunning
         }
         
         let runningTask = Task {
