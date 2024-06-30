@@ -56,7 +56,9 @@ extension ImageDownloader.View.ViewModel {
             downloadStatus = .loading
             defineDelayedLoading()
             
-            // TODO: To be removed: hold loading for 5 seconds as described in the exercise
+            
+            //TODO: Needs to be removed as it break Unit Tests
+            // Hold loading for 5 seconds as described in the exercise
             try? await Task.sleep(for: .seconds(5))
 
             // https://hws.dev/paul.jpg
