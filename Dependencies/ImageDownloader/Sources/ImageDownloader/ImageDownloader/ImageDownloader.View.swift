@@ -11,7 +11,7 @@ import CommonUI
 extension ImageDownloader {
     
     public struct View: SwiftUI.View {
-        @State private var viewModel = ViewModel()
+        @StateObject private var viewModel = ViewModel()
         
         public init() { }
         
@@ -21,8 +21,7 @@ extension ImageDownloader {
                 case .initial:
                     VStack {
                         Component.Text.Large("Image Downloader!")
-                        Component.Text.Small("Try your luck!")
-                        Component.Button.Primary("Start") {
+                        Component.Button.Primary("Download", "square.and.arrow.down") {
                             viewModel.startDownloadingImage()
                         }
                     }
