@@ -20,7 +20,9 @@ extension ImagePresenter {
             
             VStack {
                 if let image {
-                    Image(uiImage: image).padding()
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
                 }
                 
                 if let error {

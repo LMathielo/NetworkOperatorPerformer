@@ -75,8 +75,7 @@ private extension ImageDownloader.View.ViewModel {
         // TODO: Delay added to hold loading state for 5 seconds as described in the exercise
         try? await Task.sleep(for: .seconds(5))
         
-        // https://hws.dev/paul.jpg
-        guard let result = await networkService.downloadImage(with: "https://picsum.photos/200/300") else { return }
+        guard let result = await networkService.downloadImage(with: "https://i.pinimg.com/564x/6c/24/b6/6c24b6aba7050c53f56b0224507a892f.jpg") else { return }
         
         switch result {
         case .success(let image):
