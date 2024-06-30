@@ -30,7 +30,7 @@ extension ImageDownloader {
         }
         
         func downloadImage(with url: String) async -> Result<UIImage, NetworkError>? {
-            return try? await networkPerformer.performNetworkOperation(for: url, within: 10)
+            return try? await networkPerformer.performNetworkOperation(for: url, within: 5)
         }
     }
 }
