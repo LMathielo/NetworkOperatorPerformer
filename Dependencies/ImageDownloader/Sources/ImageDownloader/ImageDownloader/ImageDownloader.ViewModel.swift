@@ -20,24 +20,27 @@ extension ImageDownloader.View.ViewModel {
 }
 
 extension ImageDownloader.View {
-    @Observable class ViewModel {
+    @MainActor
+    class ViewModel: ObservableObject {
         private let networkService: ImageDownloader.Service
+        private let taskManager: TaskManager
         
-        private(set) var downloadStatus: DownloadStatus
-        private var downloadTask: Task<(), Never>?
-        
-        var shouldPresentSheet: Bool = false
+        @Published private(set) var downloadStatus: DownloadStatus
+        @Published var shouldPresentSheet: Bool = false
         
         convenience init() {
             self.init(
-                networkService: ImageDownloader.ServiceImpl()
+                networkService: ImageDownloader.ServiceImpl(),
+                taskManager: TaskManagerImpl()
             )
         }
         
         init(
-            networkService: ImageDownloader.Service
+            networkService: ImageDownloader.Service,
+            taskManager: TaskManager
         ) {
             self.networkService = networkService
+            self.taskManager = taskManager
             self.downloadStatus = .initial
         }
     }
@@ -52,42 +55,44 @@ extension ImageDownloader.View.ViewModel {
     }
     
     func startDownloadingImage() {
-        downloadTask = Task {
-            downloadStatus = .loading
-            defineDelayedLoading()
-            
-            
-            //TODO: Needs to be removed as it break Unit Tests
-            // Hold loading for 5 seconds as described in the exercise
-            try? await Task.sleep(for: .seconds(5))
-
-            // https://hws.dev/paul.jpg
-            guard let result = await networkService.downloadImage(with: "https://picsum.photos/200/300") else { return }
-        
-            switch result {
-            case .success(let image):
-                downloadStatus = .completed(image)
-                
-            case .failure(let error):
-                downloadStatus = .error(error.description)
-            }
-            
-            shouldPresentSheet = true
-        }
+        try? taskManager.start(downloadImage)
     }
     
     func cancelDownloadTask() {
-        downloadTask?.cancel()
-        downloadTask = nil
-        downloadStatus = .initial
+        taskManager.cancelCurrentTask()
+        setInitialState()
     }
 }
 
 // MARK: - Private Methods
 
 private extension ImageDownloader.View.ViewModel {
+    func downloadImage() async {
+        downloadStatus = .loading
+        defineDelayedLoading()
+        
+        // TODO: Needs to be removed as it breaks the current Unit Tests.
+        // TODO: Delay added to hold loading state for 5 seconds as described in the exercise
+        try? await Task.sleep(for: .seconds(5))
+        
+        // https://hws.dev/paul.jpg
+        guard let result = await networkService.downloadImage(with: "https://picsum.photos/200/300") else { return }
+        
+        switch result {
+        case .success(let image):
+            self.downloadStatus = .completed(image)
+            print("self?.downloadStatus = .completed(image)")
+            
+        case .failure(let error):
+            self.downloadStatus = .error(error.description)
+            print("self?.downloadStatus = .error(error.description)")
+        }
+        
+        self.shouldPresentSheet = true
+    }
+    
     func defineDelayedLoading() {
-        Task { @MainActor [weak self] in
+        Task { [weak self] in
             try await Task.sleep(for: .seconds(2))
             if self?.downloadStatus == .loading {
                 self?.downloadStatus = .delayed
