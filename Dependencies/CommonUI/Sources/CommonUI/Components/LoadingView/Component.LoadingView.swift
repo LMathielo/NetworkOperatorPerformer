@@ -9,7 +9,7 @@ import SwiftUI
 
 extension Component {
     public struct LoadingView: View {
-        private let delayed: Bool // @State breaks the component view from updating! Why?
+        private let delayed: Bool
         private var cancelAction: (() -> Void)?
         
         public init(delayed: Bool, cancelAction: (() -> Void)? = nil) {
@@ -39,6 +39,11 @@ extension Component {
             .multilineTextAlignment(.center)
         }
     }
+}
+
+#Preview {
+    Component.LoadingView(delayed: false) { }
+        .preferredColorScheme(.light)
 }
 
 #Preview {

@@ -11,15 +11,6 @@ extension Component.Button.Secondary {
     public enum Style {
         case `default`
         case cancel
-        
-        func color(for scheme: ColorScheme) -> Color {
-            switch self {
-            case .default:
-                return scheme == .light ? .black : .white
-            case .cancel:
-                return .red
-            }
-        }
     }
 }
 
@@ -27,14 +18,21 @@ extension Component.Button {
     
     public struct Secondary: View {
         @Environment(\.colorScheme) private var colorScheme
+        private var scheme: Tokens.Button.Secondary {
+            colorScheme == .light ? .light : .dark
+        }
         
         private let label: String
         private let action: () -> Void
         private let style: Style
         
+        private var customTextColor: Color? {
+            style == .cancel ? Tokens.Color.red.rawValue : nil
+        }
+        
         public init(
             _ label: String,
-            style: Style,
+            style: Style = .default,
             action: @escaping () -> Void
         ) {
             self.label = label
@@ -46,17 +44,27 @@ extension Component.Button {
             SwiftUI.Button {
                 action()
             } label: {
-                Component.Text.Small(label)
+                Component.Text.Medium(
+                    label,
+                    customColor: customTextColor
+                )
             }
-            .font(.title)
-            .foregroundStyle(style.color(for: colorScheme))
         }
     }
     
 }
 
 #Preview {
-    Component.Button.Secondary("Click me!", style: .default) { }
+    Component.Button.Secondary("Click me!") { }
+        .preferredColorScheme(.light)
+}
+
+#Preview {
+    Component.Button.Secondary("Click me!") { }
         .preferredColorScheme(.dark)
 }
 
+#Preview {
+    Component.Button.Secondary("Click me!", style: .cancel) { }
+        .preferredColorScheme(.light)
+}

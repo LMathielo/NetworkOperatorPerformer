@@ -11,6 +11,9 @@ extension Component.Button {
     
     public struct Primary: View {
         @Environment(\.colorScheme) private var colorScheme
+        private var scheme: Tokens.Button.Primary {
+            colorScheme == .light ? .light : .dark
+        }
         
         private let icon: String?
         private let label: String
@@ -37,25 +40,26 @@ extension Component.Button {
                             .scaledToFit()
                             .frame(width: 28, height: 28)
                     }
+                    
                     Component.Text.Small(label)
+                        .colorInvert()
                 }
+                .padding()
             }
-            .buttonStyle(.borderedProminent)
-            .tint(colorScheme == .light ? .blue : .white)
-            .font(.title)
-            .padding()
-            .foregroundStyle(colorScheme == .light ? .white : .black)
+            .background(scheme.tint)
+            .ifForegroundStyle(scheme.foreground)
+            .ifCornerRadius(scheme.border)
         }
     }
     
 }
 
 #Preview {
-    Component.Button.Primary("Cancel") { }
+    Component.Button.Primary("Cancel", "square.and.arrow.down") { }
         .preferredColorScheme(.light)
 }
 
 #Preview {
-    Component.Button.Primary("Cancel") { }
+    Component.Button.Primary("Cancel", "square.and.arrow.down") { }
         .preferredColorScheme(.dark)
 }
