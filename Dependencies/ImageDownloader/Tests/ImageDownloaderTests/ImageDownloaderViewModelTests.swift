@@ -3,118 +3,143 @@ import Networking
 @testable import ImageDownloader
 
 final class ImageDownloaderTests: XCTestCase {
-    
     var networkServiceMock: ImageDownloaderServiceMock!
+    var taskManagerMock: TaskManagerMock!
     
     var sut: ImageDownloader.View.ViewModel!
     
-    override func setUp() {
+    override func setUp() async throws {
         networkServiceMock = ImageDownloaderServiceMock()
+        taskManagerMock = TaskManagerMock()
         
-        sut = ImageDownloader.View.ViewModel(
-            networkService: networkServiceMock
+        sut = await ImageDownloader.View.ViewModel(
+            networkService: networkServiceMock,
+            taskManager: taskManagerMock
         )
     }
     
     func test_startDownloadingImage_getsLoadingState() async throws {
-        sut.startDownloadingImage()
+        // Given
+        var status = await sut.downloadStatus
+        XCTAssertEqual(status, .initial)
         
-        let task = Task {
-            sut.startDownloadingImage()
-            try await Task.sleep(for: .seconds(1)) // bad! smell!
-        }
+        // When
+        await sut.startDownloadingImage()
         
-        try await task.value
-        
-        XCTAssertTrue(networkServiceMock.didCallDownloadImage)
-        XCTAssert(sut.downloadStatus == .loading)
+        // Then
+        status = await sut.downloadStatus
+        XCTAssertTrue(taskManagerMock.startCalled)
+        XCTAssertEqual(status, .loading)
     }
     
     func test_startDownloadingImage_getsDelayedState() async throws {
-        
-        XCTAssert(sut.downloadStatus == .initial)
-        print(sut.downloadStatus)
+        // Given
+        var status = await sut.downloadStatus
+        XCTAssert(status == .initial)
         networkServiceMock.delaySeconds = 5
         
-        let task = Task {
-            sut.startDownloadingImage()
-            try await Task.sleep(for: .seconds(3)) // bad! smell!
-        }
-        try await task.value
+        // When
+        await sut.startDownloadingImage()
+        await taskManagerMock.awaitTaskCompletion()
         
-        XCTAssert(sut.downloadStatus == .delayed)
+        // Then
+        status = await sut.downloadStatus
+        XCTAssertTrue(taskManagerMock.startCalled)
+        XCTAssert(status == .delayed)
     }
     
     func test_startDownloadingImage_getsSuccessWithImage() async throws {
-        
-        XCTAssert(sut.downloadStatus == .initial)
-        
+        // Given
+        let status = await sut.downloadStatus
+        XCTAssert(status == .initial)
         let mockImage = UIImage()
         networkServiceMock.result = .success(mockImage)
         
-        let task = Task {
-            sut.startDownloadingImage()
-            try await Task.sleep(for: .seconds(1)) // bad! smell!
-        }
+        // When
+        await sut.startDownloadingImage()
+        await taskManagerMock.awaitTaskCompletion()
         
-        try await task.value
-        
-        guard case let .completed(image) = sut.downloadStatus else {
+        // Then
+        guard case let .completed(image) = await sut.downloadStatus else {
             return XCTFail("request failed")
         }
         
+        XCTAssertTrue(taskManagerMock.startCalled)
         XCTAssert(image == mockImage)
     }
     
     func test_startDownloadingImage_getsFailureNetworkError() async throws {
+        // Given
         networkServiceMock.result = .failure(.timeout)
         
-        let task = Task {
-            sut.startDownloadingImage()
-            try await Task.sleep(for: .seconds(1)) // bad! smell!
-        }
-        try await task.value
+        // When
+        await sut.startDownloadingImage()
+        await taskManagerMock.awaitTaskCompletion()
         
-        guard case let .error(error) = sut.downloadStatus else {
+        // Then
+        guard case let .error(error) = await sut.downloadStatus else {
             return XCTFail("request failed")
         }
         
+        XCTAssertTrue(taskManagerMock.startCalled)
         XCTAssert(error == "The network could not be fetched. Reason: timeout")
     }
     
     func test_setInitialState_setsInitialState() async throws {
-        let task = Task {
-            sut.startDownloadingImage()
-            try await Task.sleep(for: .seconds(1)) // bad! smell!
-        }
-        try await task.value
+        // Given
+        await sut.startDownloadingImage()
+        var status = await sut.downloadStatus
+        XCTAssert(status == .loading)
         
-        XCTAssert(sut.downloadStatus == .loading)
-        sut.setInitialState()
-        XCTAssert(sut.downloadStatus == .initial)
+        // When
+        await sut.setInitialState()
+        
+        // Then
+        status = await sut.downloadStatus
+        XCTAssert(status == .initial)
     }
     
     
-    //can't really test
-    func test_cancelCurrentTask_setsInitialState() async throws {
-        let task = Task {
-            sut.startDownloadingImage()
-            sut.cancelDownloadTask()
-            try await Task.sleep(for: .seconds(1)) // bad! smell!
-        }
-        try await task.value
+    func test_cancelDownloadTask_setsInitialState() async throws {
+        // Given
+        await sut.startDownloadingImage()
         
-        XCTAssert(sut.downloadStatus == .initial)
+        // When
+        await sut.cancelDownloadTask()
+        
+        // Then
+        let status = await sut.downloadStatus
+        XCTAssert(status == .initial)
+        XCTAssertTrue(taskManagerMock.startCalled)
+        XCTAssertTrue(taskManagerMock.cancelCalled)
     }
     
 }
 
+// MARK: Mocks
 extension ImageDownloaderTests {
+    class TaskManagerMock: TaskManagerImpl {
+        var startCalled = false
+        var cancelCalled = false
+        
+        func awaitTaskCompletion() async {
+            await runningTask?.value
+        }
+        
+        override func start(_ task: @escaping () async -> Void) throws {
+            startCalled = true
+            try super.start(task)
+        }
+        
+        override func cancelCurrentTask() {
+            cancelCalled = true
+            super.cancelCurrentTask()
+        }
+    }
+    
     class ImageDownloaderServiceMock: ImageDownloader.Service {
-        
         var didCallDownloadImage: Bool = false
-        
-        var delaySeconds = 0
+        var delaySeconds = 1
         var result: Result<UIImage, Networking.NetworkError>? = nil
         
         func downloadImage(with url: String) async -> Result<UIImage, Networking.NetworkError>? {
