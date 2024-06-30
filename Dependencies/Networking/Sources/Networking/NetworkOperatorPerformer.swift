@@ -7,13 +7,16 @@
 
 import Foundation
 
+// Ideally, this should be a generic <T: Decodable> to handle proper API responses.
+// Using `DownloadableContent` in this case as we want to abstract the usage of NetworkOperation to any Object that can be initialised with Data. E.g: UIImages
 public protocol DownloadableContent {
     init?(data: Data)
 }
 
 public protocol NetworkOperationPerformer {
-    // Ideally, this should be a generic <T: Decodable> to handle proper API responses.
-    // Using `DownloadableContent` in this case as we want to abstract the usage of NetworkOperation to any Object that can be initialised with Data. E.g: UIImages :)
+    /// Attempts to perform a network operation using the given `url` string, within the given `timeoutDuration`.
+    /// If the network is not accessible within the given `timeoutDuration`, the operation is not performed.
+    ///
     func performNetworkOperation<T: DownloadableContent>(
         for urlString: String,
         within timeoutDuration: TimeInterval
@@ -22,18 +25,23 @@ public protocol NetworkOperationPerformer {
 
 public final class NetworkOperationPerformerImpl: NetworkOperationPerformer {
     private let networkMonitor: NetworkMonitor
+    private let session: NetworkSession
     
     public convenience init () {
-        self.init(networkMonitor: NetworkMonitorImpl())
+        self.init(
+            networkMonitor: NetworkMonitorImpl(),
+            session: URLSession.shared
+        )
     }
     
-    init(networkMonitor: NetworkMonitor) {
+    init(
+        networkMonitor: NetworkMonitor,
+        session: NetworkSession
+    ) {
         self.networkMonitor = networkMonitor
+        self.session = session
     }
     
-    /// Attempts to perform a network operation using the given `closure`, within the given `timeoutDuration`.
-    /// If the network is not accessible within the given `timeoutDuration`, the operation is not performed.
-    /// 
     public func performNetworkOperation<T: DownloadableContent>(for urlString: String, within timeoutDuration: TimeInterval) async throws -> Result<T, NetworkError> {
         
         return try await withThrowingTaskGroup(of: Result<T, NetworkError>.self) { group in
@@ -70,8 +78,7 @@ private extension NetworkOperationPerformerImpl {
         }
         
         print("its download time!")
-        
-        guard let (data, _) = try? await URLSession.shared.data(from: url) else {
+        guard let (data, _) = try? await session.fetchData(from: url) else {
             return .failure(NetworkError.downloadFailed)
         }
         
