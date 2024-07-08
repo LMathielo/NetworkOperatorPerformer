@@ -30,7 +30,25 @@ extension ImageDownloader {
         }
         
         func downloadImage(with url: String) async -> Result<UIImage, NetworkError>? {
-            return await networkPerformer.performNetworkOperation(for: url, within: 5)
+            await networkPerformer.performNetworkOperation(within: 5) {
+                return await self.download(with: url)
+            }
+        }
+        
+        private func download(with urlString: String) async -> Result<UIImage, NetworkError> {
+            guard let url = URL(string: urlString) else {
+                return .failure(NetworkError.invalidUrl)
+            }
+            
+            guard let (data, _) = try? await URLSession.shared.data(from: url) else {
+                return .failure(NetworkError.downloadFailed)
+            }
+            
+            guard let content = UIImage(data: data) else {
+                return .failure(.parsingFailure)
+            }
+            
+            return .success(content)
         }
     }
 }

@@ -71,10 +71,6 @@ private extension ImageDownloader.View.ViewModel {
         downloadStatus = .loading
         defineDelayedLoading()
         
-        // TODO: Needs to be removed as it breaks the current Unit Tests.
-        // TODO: Delay added to hold loading state for 5 seconds as described in the exercise
-        try? await Task.sleep(for: .seconds(5))
-        
         guard let result = await networkService.downloadImage(with: "https://i.pinimg.com/564x/6c/24/b6/6c24b6aba7050c53f56b0224507a892f.jpg") else { return }
         
         switch result {

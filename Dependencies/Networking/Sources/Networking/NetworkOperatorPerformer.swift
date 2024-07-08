@@ -18,8 +18,8 @@ public protocol NetworkOperationPerformer {
     /// If the network is not accessible within the given `timeoutDuration`, the operation is not performed.
     ///
     func performNetworkOperation<T: DownloadableContent>(
-        for urlString: String,
-        within timeoutDuration: TimeInterval
+        within timeoutDuration: TimeInterval,
+        closure: @escaping () async -> Result<T, NetworkError>
     ) async -> Result<T, NetworkError>?
 }
 
@@ -47,6 +47,34 @@ public final class NetworkOperationPerformerImpl: NetworkOperationPerformer {
         return await withTaskGroup(of: Result<T, NetworkError>?.self) { group in
             group.addTask {
                 return await self.performRequestIfNetworkReachable(for: urlString)
+            }
+            
+            group.addTask {
+                try? await Task.sleep(for: .seconds(timeoutDuration))
+                if Task.isCancelled { return nil }
+                return .failure(NetworkError.timeout)
+            }
+            
+            guard let result = await group.next() else {
+                return .failure(NetworkError.unknown("not possible"))
+            }
+            
+            group.cancelAll()
+            
+            return result
+        }
+    }
+    
+    public func performNetworkOperation<T: DownloadableContent>(
+        within timeoutDuration: TimeInterval,
+        closure: @escaping () async -> Result<T, NetworkError>
+    ) async -> Result<T, NetworkError>? {
+        
+        return await withTaskGroup(of: Result<T, NetworkError>?.self) { group in
+            group.addTask {
+                await self.networkMonitor.signalNetworkReachable()
+                if Task.isCancelled { return nil }
+                return await closure()
             }
             
             group.addTask {
