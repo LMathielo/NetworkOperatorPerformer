@@ -20,7 +20,7 @@ public protocol NetworkOperationPerformer {
     func performNetworkOperation<T: DownloadableContent>(
         for urlString: String,
         within timeoutDuration: TimeInterval
-    ) async throws -> Result<T, NetworkError>
+    ) async -> Result<T, NetworkError>?
 }
 
 public final class NetworkOperationPerformerImpl: NetworkOperationPerformer {
@@ -42,19 +42,20 @@ public final class NetworkOperationPerformerImpl: NetworkOperationPerformer {
         self.session = session
     }
     
-    public func performNetworkOperation<T: DownloadableContent>(for urlString: String, within timeoutDuration: TimeInterval) async throws -> Result<T, NetworkError> {
+    public func performNetworkOperation<T: DownloadableContent>(for urlString: String, within timeoutDuration: TimeInterval) async -> Result<T, NetworkError>? {
         
-        return try await withThrowingTaskGroup(of: Result<T, NetworkError>.self) { group in
+        return await withTaskGroup(of: Result<T, NetworkError>?.self) { group in
             group.addTask {
-                return try await self.performRequestIfNetworkReachable(for: urlString)
+                return await self.performRequestIfNetworkReachable(for: urlString)
             }
             
             group.addTask {
-                try await Task.sleep(for: .seconds(timeoutDuration))
+                try? await Task.sleep(for: .seconds(timeoutDuration))
+                if Task.isCancelled { return nil }
                 return .failure(NetworkError.timeout)
             }
             
-            guard let result = try await group.next() else {
+            guard let result = await group.next() else {
                 return .failure(NetworkError.unknown("not possible"))
             }
             
@@ -66,12 +67,12 @@ public final class NetworkOperationPerformerImpl: NetworkOperationPerformer {
 }
 
 private extension NetworkOperationPerformerImpl {
-    func performRequestIfNetworkReachable<T: DownloadableContent>(for urlString: String) async throws -> Result<T, NetworkError> {
+    func performRequestIfNetworkReachable<T: DownloadableContent>(for urlString: String) async -> Result<T, NetworkError>? {
         
         await self.networkMonitor.signalNetworkReachable()
         
-        // explicitly throws the task, if its on a cancelled state to avoid unecessary API calls
-        try Task.checkCancellation()
+        // explicitly returns the task, if its on a cancelled state to avoid unecessary API calls
+        if Task.isCancelled { return nil }
         
         guard let url = URL(string: urlString) else {
             return .failure(NetworkError.invalidUrl)

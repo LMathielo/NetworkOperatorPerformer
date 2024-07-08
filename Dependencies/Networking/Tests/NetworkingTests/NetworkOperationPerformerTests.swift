@@ -22,7 +22,7 @@ final class NetworkOperationPerformerTests: XCTestCase {
         networkMonitorMock.isReachable = true
         
         // When
-        let result: Result<DownloadableContentMock, NetworkError>? = try? await sut.performNetworkOperation(for: "https://google.com", within: 1)
+        let result: Result<DownloadableContentMock, NetworkError>? = await sut.performNetworkOperation(for: "https://google.com", within: 0.1)
         
         // Then
         guard case .success(_) = result else {
@@ -37,7 +37,7 @@ final class NetworkOperationPerformerTests: XCTestCase {
         networkMonitorMock.isReachable = true
         
         // When
-        let result: Result<DownloadableContentMock, NetworkError>? = try? await sut.performNetworkOperation(for: "", within: 1)
+        let result: Result<DownloadableContentMock, NetworkError>? = await sut.performNetworkOperation(for: "", within: 0.1)
         
         // Then
         guard case let .failure(error) = result else {
@@ -53,7 +53,7 @@ final class NetworkOperationPerformerTests: XCTestCase {
         networkMonitorMock.isReachable = true
         
         // When
-        let result: Result<FailableParsingContentMock, NetworkError>? = try? await sut.performNetworkOperation(for: "https://google.com", within: 1)
+        let result: Result<FailableParsingContentMock, NetworkError>? = await sut.performNetworkOperation(for: "https://google.com", within: 0.1)
         
         // Then
         guard case let .failure(error) = result else {
@@ -70,7 +70,7 @@ final class NetworkOperationPerformerTests: XCTestCase {
         networkSessionMock.fetchDataFailure = true
         
         // When
-        let result: Result<DownloadableContentMock, NetworkError>? = try? await sut.performNetworkOperation(for: "https://google.com", within: 1)
+        let result: Result<DownloadableContentMock, NetworkError>? = await sut.performNetworkOperation(for: "https://google.com", within: 0.1)
         
         // Then
         guard case let .failure(error) = result else {
@@ -86,7 +86,7 @@ final class NetworkOperationPerformerTests: XCTestCase {
         networkMonitorMock.isReachable = false
         
         // When
-        let result: Result<DownloadableContentMock, NetworkError>? = try? await sut.performNetworkOperation(for: "https://google.com", within: 1)
+        let result: Result<DownloadableContentMock, NetworkError>? = await sut.performNetworkOperation(for: "https://google.com", within: 0.1)
         
         // Then
         guard case let .failure(error) = result else {
@@ -102,7 +102,7 @@ final class NetworkOperationPerformerTests: XCTestCase {
         networkMonitorMock.isReachable = false
         
         // When
-        let result: Result<DownloadableContentMock, NetworkError>? = try? await sut.performNetworkOperation(for: "https://google.com", within: 3)
+        let result: Result<DownloadableContentMock, NetworkError>? = await sut.performNetworkOperation(for: "https://google.com", within: 0.3)
         
         // Then
         guard case .success(_) = result else {
@@ -145,7 +145,7 @@ extension NetworkOperationPerformerTests {
         
         func signalNetworkReachable() async {
             if !isReachable {
-                try? await Task.sleep(for: .seconds(2))
+                try? await Task.sleep(for: .seconds(0.2))
             } else {
                 return
             }
