@@ -22,7 +22,6 @@ final class NetworkMonitorImpl: NetworkMonitor {
     private var networkReachableStream: AsyncStream<NWPath.Status> {
         AsyncStream { continuation in
             let monitor = NWPathMonitor()
-            monitor.start(queue: DispatchQueue(label: "NetworkMonitor"))
             
             monitor.pathUpdateHandler = { @Sendable path in
                     continuation.yield(path.status)
@@ -31,6 +30,8 @@ final class NetworkMonitorImpl: NetworkMonitor {
             continuation.onTermination = { @Sendable _ in
                 monitor.cancel()
             }
+            
+            monitor.start(queue: DispatchQueue(label: "NetworkMonitor"))
         }
     }
 }
